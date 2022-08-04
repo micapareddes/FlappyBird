@@ -6,9 +6,9 @@
   </div>
   
   <div align=center>
-    <img src="" width=200px>
+    <img src="https://user-images.githubusercontent.com/109560619/182929450-b4752bd6-359d-4f6b-8937-c1ffb3ed1be4.gif" width=300px>
     <h1>Flappy Bird</h1>
-    <img align=right src="http://img.shields.io/static/v1?label=STATUS&message=STATUS_HERE&color=GREEN&style=for-the-badge" width="145px"/>
+    <img align=right src="http://img.shields.io/static/v1?label=STATUS&message=WIP&color=GREEN&style=for-the-badge" width="145px"/>
   </div>
 </head>
   
