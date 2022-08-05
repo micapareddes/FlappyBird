@@ -1,34 +1,72 @@
 console.log('FlappyBird');
 
+const hitSound = new Audio();
+hitSound.src = './effects/hit.wav';
+
+const jumpSound = new Audio();
+jumpSound.src = './effects/jump.wav';
+
 const sprites = new Image();
-sprites.src = './img/sprites.png'
+sprites.src = './img/sprites.png';
 
 const canvas = document.querySelector('canvas')
 const context = canvas.getContext('2d')
 
 //-flappy bird---------
-const flappyBird = {
-    sourceX: 0,
-    sourceY: 0,
-    width: 34,
-    height: 24,
-    x: (canvas.width / 2) - 100 / 2,
-    y: 180,
-    gravity: 0.25,
-    velocity: 0,
-    refresh() {
-        flappyBird.velocity = flappyBird.velocity + flappyBird.gravity; /* para que a velocidade aumente conforme o flappy bird desce */
-        flappyBird.y = flappyBird.y + flappyBird.velocity; /* para que caia */
-    },
-    draw() {
-        context.drawImage(
-            sprites, /* image= imagem que vamos usar, nesse caso sprites */
-            flappyBird.sourceX, flappyBird.sourceY, /* sprite X, sprite Y /* pedaço da imagem, sprites, que vamos pegar */
-            flappyBird.width, flappyBird.height, /* tamanho do recorte na sprite */
-            flappyBird.x, flappyBird.y, /* tamanho do x e y no canvas*/
-            flappyBird.width, flappyBird.height, /* tamanho do width e height no canvas */
-        );
-    },
+function newFlappyBird(){
+    const flappyBird = {
+        sourceX: 0,
+        sourceY: 0,
+        width: 34,
+        height: 24,
+        x: (canvas.width / 2) - 100 / 2,
+        y: 180,
+        gravity: 0.25,
+        velocity: 0,
+        jumping: 4.6,
+        jump(){
+            console.log('i jump');
+            flappyBird.velocity = -flappyBird.jumping;
+            jumpSound.play();
+        },
+        refresh() {
+            if (collide(flappyBird, floor)){
+
+                console.log('bird collied');
+
+                hitSound.play();
+
+                setTimeout(() => {
+                    changeScreen(screens.getReady);
+                },500);
+                return;
+            }
+    
+            flappyBird.velocity = flappyBird.velocity + flappyBird.gravity; /* para que a velocidade aumente conforme o flappy bird desce */
+            flappyBird.y = flappyBird.y + flappyBird.velocity; /* para que caia */
+        },
+        draw() {
+            context.drawImage(
+                sprites, /* image= imagem que vamos usar, nesse caso sprites */
+                flappyBird.sourceX, flappyBird.sourceY, /* sprite X, sprite Y /* pedaço da imagem, sprites, que vamos pegar */
+                flappyBird.width, flappyBird.height, /* tamanho do recorte na sprite */
+                flappyBird.x, flappyBird.y, /* tamanho do x e y no canvas*/
+                flappyBird.width, flappyBird.height, /* tamanho do width e height no canvas */
+            );
+        },
+    };
+    return flappyBird;
+};
+
+function collide(flappyBird, floor){
+    const flappyBirdY = flappyBird.y + flappyBird.height;
+    const floorY = floor.y;
+    
+    if(flappyBirdY >= floorY){
+        return true;
+    }
+
+    return false;
 };
 
 //-landscape------------
@@ -81,20 +119,29 @@ const floor = {
 };
 
 //-screens----------
+function start(){
+    global.flappyBird = newFlappyBird();
+};
+
+const global = {};
+
 let activeScreen = {};
 function changeScreen(newScreen){
     activeScreen = newScreen;
-}
-
+    if(activeScreen.start){
+        start();
+    };
+};
 
 const screens = {
     getReady: {
+        start(){},
         draw() {
             background.draw();
         
             floor.draw();
         
-            flappyBird.draw();
+            global.flappyBird.draw();
 
             getReady.draw();
             
@@ -112,10 +159,13 @@ const screens = {
         
             floor.draw();
         
-            flappyBird.draw();
+            global.flappyBird.draw();
+        },
+        click() {
+            global.flappyBird.jump();
         },
         refresh() {
-            flappyBird.refresh();
+            global.flappyBird.refresh();
         },
     },
 };
