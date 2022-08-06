@@ -119,23 +119,21 @@ const floor = {
 };
 
 //-screens----------
-function start(){
-    global.flappyBird = newFlappyBird();
-};
-
 const global = {};
 
 let activeScreen = {};
 function changeScreen(newScreen){
     activeScreen = newScreen;
     if(activeScreen.start){
-        start();
+        screens.getReady.start();
     };
 };
 
 const screens = {
     getReady: {
-        start(){},
+        start(){
+        global.flappyBird = newFlappyBird();
+        },
         draw() {
             background.draw();
         
